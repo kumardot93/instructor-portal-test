@@ -41,7 +41,7 @@ class OverlayForm extends Component {
 				if (data.toLowerCase().substring(0, 7) === 'success') {
 					let pk = parseInt(data.toLowerCase().substring(8));
 					setTimeout(() => {
-						window.open(this.props.success_url + pk, '_blank');
+						window.open(this.props.success_url + pk, '_self');
 						window.location.reload();
 					}, 2500);
 					this.setState((state, props) => {
