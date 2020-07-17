@@ -30,8 +30,16 @@
 	font-size: x-large;
 }
 
+#header h1 {
+	padding-left: 18px;
+}
+#header p {
+	padding-left: 24px;
+}
+
 .heading {
 	border-radius: 3px;
+	/* white-space: nowrap; */
 }
 
 .addBtn {
@@ -45,7 +53,7 @@
 }
 
 .addBtn:hover {
-	transform: scale(1.2);
+	transform: scale(1.2) translateX(3px);
 	color: lightgreen;
 	text-decoration: none;
 }
@@ -73,4 +81,13 @@
 .assBtn span {
 	position: relative;
 	bottom: 4px;
+}
+
+@media only screen and (max-width: 400px) {
+	#header h1 {
+		padding-left: unset;
+	}
+	#header p {
+		padding-left: unset;
+	}
 }

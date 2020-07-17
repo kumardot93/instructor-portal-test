@@ -7,17 +7,24 @@ import { updateMaterial } from '../../redux/actions/Tests.js';
 
 class Main extends Component {
 	//Fetching Dashboard data
-	componentDidMount = () => {
-		fetch(window.base + '/material/api/instructor-portal/test/', { credentials: window.cred })
+
+	fetchTestList = () => {
+		//fetching details for all test data
+		fetch(window.base + '/studentTest/api/list-testSA/', { credentials: window.cred })
 			.then((response) => response.json())
 			.then((data) => this.props.updateMaterial(data))
 			.catch((error) => alert(error));
 	};
 
+	componentDidMount = () => {
+		//fetching details for all test data
+		this.fetchTestList();
+	};
+
 	render() {
 		return (
 			<div id={styles.main}>
-				<Tests />
+				<Tests updateList={this.fetchTestList} />
 			</div>
 		);
 	}

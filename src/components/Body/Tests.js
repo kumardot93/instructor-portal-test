@@ -8,7 +8,7 @@ import OverlayTestResponses from './OverlayTestResults.js';
 import { connect } from 'react-redux';
 import { deleteTest as dt } from '../../redux/actions/Tests.js';
 
-function newTest(event) {
+function newTest(event, success_callback) {
 	//Create new test
 	event.preventDefault();
 	let el = document.getElementById('overlay');
@@ -16,8 +16,9 @@ function newTest(event) {
 	ReactDOM.render(
 		<OverlayForm
 			title="New Test"
-			url={window.base + '/material/api/newTest/'}
-			success_url={window.base + '/material/create-test/'}
+			url={window.base + '/studentTest/api/newTest/'}
+			success_url={window.base + '/studentTest/create-testSA/'}
+			success_callback={success_callback} //TO UPDATE TEST LIST
 		/>,
 		el
 	);
@@ -30,7 +31,7 @@ function TestResponses(pk) {
 	ReactDOM.render(<OverlayTestResponses pk={pk} />, el);
 }
 
-function deleteTest(pk, test, delMethod) {
+function deleteTest(pk, test, delCallback) {
 	//Delete a test
 	let el = document.getElementById('overlay');
 	el.style.display = 'block';
@@ -38,8 +39,8 @@ function deleteTest(pk, test, delMethod) {
 		<OverlayDeleteTest
 			title="Test Delete Form"
 			data={test}
-			url={window.base + '/material/api/test/deleteTest/' + pk + '/'}
-			delete={delMethod}
+			url={window.base + '/studentTest/api/testSA/deleteTest/' + pk + '/'}
+			deleteCallback={delCallback}
 		/>,
 		el
 	);
@@ -70,7 +71,7 @@ function Tests(props) {
 						</button>
 
 						<a
-							href={window.base + '/material/create-test/' + data.pk} //Link to create test
+							href={window.base + '/studentTest/create-testSA/' + data.pk} //Link to create test
 							className={[ 'material-icons btn p-1', styles.editBtn ].join(' ')}
 						>
 							edit
@@ -96,17 +97,22 @@ function Tests(props) {
 
 	return (
 		<React.Fragment>
-			<h1 className={[ 'pl-4 text-dark mt-4 ml-4', styles.heading ].join(' ')}>
-				Tests
-				<button
-					onClick={newTest}
-					className={[ 'material-icons m-2 p-0 text-success mr-4 pr-4', styles.addBtn ].join(' ')}
-				>
-					add
-				</button>
-			</h1>
-			<hr className="ml-3" />
-			<div className={[ 'ml-2 pr-2 form-control', styles.testsCont ].join(' ')}>{tests}</div>
+			<div id={styles.header}>
+				<h1 className={[ 'd-flex flex-row text-dark mt-4 ml-4', styles.heading ].join(' ')}>
+					Tests
+					<button
+						onClick={(event) => newTest(event, props.updateList)}
+						className={[ 'material-icons ml-auto m-2 mr-4 p-0 text-success ', styles.addBtn ].join(' ')}
+					>
+						add
+					</button>
+				</h1>
+				<p className="text-secondary ml-4">
+					Self Assesment Tests, meant for learning, practice and self evaluation
+				</p>
+				<hr className="ml-3" />
+			</div>
+			<div className={[ 'form-control', styles.testsCont ].join(' ')}>{tests}</div>
 		</React.Fragment>
 	);
 }

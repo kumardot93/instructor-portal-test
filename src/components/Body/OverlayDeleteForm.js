@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import CloseOverlay from './../CloseOverlay.js';
 import styles from './css/OverlayForm.module.css';
 
+import Cookies from 'js-cookie';
+
 class OverlayDeleteForm extends Component {
 	constructor(props) {
 		super(props);
@@ -15,7 +17,7 @@ class OverlayDeleteForm extends Component {
 	componentDidMount = () => {
 		fetch(this.props.url, { credentials: window.cred }).then((response) => response.text()).then((data) => {
 			this.setState((state, props) => {
-				return { data: data, spinner: '' };
+				return { data: data, spinner: '' }; //Fetches message data and sets csrf cookie
 			});
 		});
 	};
@@ -23,9 +25,12 @@ class OverlayDeleteForm extends Component {
 	submitHandler = (event) => {
 		event.preventDefault();
 		this.setState({ btnSpinner: 'spinner-border spinner-border-sm' });
+		let form = new FormData();
+		form.append('csrfmiddlewaretoken', Cookies.get('csrftoken'));
 		fetch(this.props.url, {
 			method: 'POST',
 			credentials: window.cred
+			// body: form
 		})
 			.then((response) => response.text())
 			.then((data) => {
@@ -36,7 +41,7 @@ class OverlayDeleteForm extends Component {
 							success: 1
 						};
 					});
-					this.props.delete();
+					this.props.deleteCallback();
 				} else {
 					this.setState((state, props) => {
 						return {
@@ -55,8 +60,8 @@ class OverlayDeleteForm extends Component {
 				</button>
 				{this.state.spinner === '' ? (
 					<React.Fragment>
-						<h1 className="text-center mb-2">{this.props.title}</h1>
-						<h2>{this.props.data}</h2>
+						<h1 className="text-center">{this.props.title}</h1>
+						<h2 className="m-2">{this.props.data}</h2>
 						<h1
 							className={[
 								'form-control p-2',
@@ -68,10 +73,8 @@ class OverlayDeleteForm extends Component {
 						</h1>
 						{this.state.success === 0 ? (
 							<button
-								style={{ marginTop: '10px' }}
 								className="btn btn-primary"
 								id={styles.submit}
-								type="submit"
 								disabled={this.state.btnSpinner !== ''}
 								onClick={this.submitHandler}
 							>

@@ -11,7 +11,6 @@ const Tests = (state = { tests: [] }, action) => {
 		default:
 			break;
 	}
-	console.log('reducer test:', state);
 	return state;
 };
 

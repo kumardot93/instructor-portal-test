@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import CloseOverlay from './../CloseOverlay.js';
 import styles from './css/OverlayForm.module.css';
 
+import Cookies from 'js-cookie';
+
 class OverlayForm extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			form_data: '',
 			success: 0, //success !=0 if task sucessfull
 			spinner: 'spinner-grow',
 			btnSpinner: '',
@@ -15,11 +16,11 @@ class OverlayForm extends Component {
 	}
 
 	componentDidMount = () => {
-		fetch(this.props.url, { credentials: window.cred }) //fetching form data from backend
+		fetch(this.props.url, { credentials: window.cred }) //fetching just to ensure csrf token is set in cookie
 			.then((response) => response.text())
 			.then((data) => {
 				this.setState((state, props) => {
-					return { form_data: data, spinner: '' }; //storing response to this.state.form_data
+					return { spinner: '' }; //removing spinner
 				});
 			})
 			.catch((error) => alert(error));
@@ -27,8 +28,9 @@ class OverlayForm extends Component {
 
 	submitHandler = (event) => {
 		event.preventDefault();
-		var form = new FormData(document.querySelector([ '#', styles.form ].join('')));
 		this.setState({ btnSpinner: 'spinner-border spinner-border-sm' });
+		var form = new FormData(document.querySelector([ '#', styles.form ].join('')));
+		form.append('csrfmiddlewaretoken', Cookies.get('csrftoken')); //Appending csrfg token for csrf validation
 		fetch(this.props.url, {
 			//sending form data to backend
 			method: 'POST',
@@ -37,12 +39,15 @@ class OverlayForm extends Component {
 		})
 			.then((response) => response.text())
 			.then((data) => {
-				console.log(data);
 				if (data.toLowerCase().substring(0, 7) === 'success') {
-					let pk = parseInt(data.toLowerCase().substring(8));
+					let pk = parseInt(data.toLowerCase().substring(8)); //Extracting pk from the success response
+					if (this.props.success_callback) {
+						this.props.success_callback();
+						console.log('success_callback');
+					}
 					setTimeout(() => {
-						window.open(this.props.success_url + pk, '_self');
-						window.location.reload();
+						window.open(this.props.success_url + pk, '_blank'); //Opens a new window to adust the new created element
+						// window.location.reload();
 					}, 2500);
 					this.setState((state, props) => {
 						return {
@@ -50,12 +55,11 @@ class OverlayForm extends Component {
 							btnSpinner: ''
 						};
 					});
-					// this.props.updateBoard();
 				} else {
 					//else show errors received from backend
 					this.setState((state, props) => {
 						return {
-							form_data: data, //html form with errors received from backend
+							error_msg: data, //render Error message
 							btnSpinner: ''
 						};
 					});
@@ -65,7 +69,6 @@ class OverlayForm extends Component {
 	};
 
 	render() {
-		console.log(this.state);
 		return (
 			<div className="container bg-light" id={styles.overlaymain}>
 				<button id={styles.cross} onClick={(event) => CloseOverlay(event, styles.overlaymain)}>
@@ -89,7 +92,6 @@ class OverlayForm extends Component {
 							</label>
 						)}
 						<form onSubmit={this.submitHandler} id={styles.form} className={styles.form}>
-							<fieldset dangerouslySetInnerHTML={{ __html: this.state.form_data }} />
 							<fieldset disabled={this.state.btnSpinner !== '' || this.state.success === 1}>
 								<label>Title:</label>
 								<input className="form-control" name="title" type="text" required />

@@ -6,7 +6,6 @@ export function updateMaterial(data) {
 }
 
 export function deleteTest(index) {
-	console.log('delete called');
 	return {
 		type: 'deleteTest',
 		payload: index

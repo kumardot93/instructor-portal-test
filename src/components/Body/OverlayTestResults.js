@@ -6,13 +6,13 @@ class OverlayForm extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			data: [],
+			data: [], //data for test responses to be fetched
 			spinner: 'spinner-grow'
 		};
 	}
 
 	componentDidMount = () => {
-		fetch(window.base + '/material/api/test/response/' + this.props.pk + '/', { credentials: window.cred }) //fetching form data from backend
+		fetch(window.base + '/studentTest/api/testSA/response/' + this.props.pk + '/', { credentials: window.cred }) //fetching form data from backend
 			.then((response) => response.json())
 			.then((data) => {
 				this.setState((state, props) => {
