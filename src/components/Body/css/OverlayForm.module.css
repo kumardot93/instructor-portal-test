@@ -110,4 +110,7 @@ p {
 		left: 8vw;
 		padding: 12px;
 	}
+	#overlaymain h1 {
+		font-size: 12.5vw;
+	}
 }
