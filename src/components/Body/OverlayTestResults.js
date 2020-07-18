@@ -30,7 +30,7 @@ class OverlayForm extends Component {
 				let t = new Date(data.fields.time);
 				return (
 					<a
-						href={window.base + '/material/check-test/' + data.pk}
+						href={window.base + '/studentTest/check-test/' + data.pk}
 						target="_blank"
 						rel="noopener noreferrer"
 						className={'btn btn-light form-control mt-1 text-left ' + styles.resLink}

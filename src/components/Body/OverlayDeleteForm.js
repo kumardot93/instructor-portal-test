@@ -29,8 +29,8 @@ class OverlayDeleteForm extends Component {
 		form.append('csrfmiddlewaretoken', Cookies.get('csrftoken'));
 		fetch(this.props.url, {
 			method: 'POST',
-			credentials: window.cred
-			// body: form
+			credentials: window.cred,
+			body: form
 		})
 			.then((response) => response.text())
 			.then((data) => {

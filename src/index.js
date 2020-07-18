@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 
 window.base = 'http://localhost:8000';
 window.media_url = window.base + '/media/';
-// window.media_url = 'https://eduhub.blob.core.windows.net/eduhub/';
+// window.media_url = 'https://cadmea.blob.core.windows.net/education/';
 window.cred = 'include';
 
 ReactDOM.render(
